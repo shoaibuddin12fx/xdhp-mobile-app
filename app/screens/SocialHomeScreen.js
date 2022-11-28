@@ -218,7 +218,7 @@ function SocialHomeScreen(props) {
             source={require('../Assets/userImage.png')}
             style={styles.whatsNewImage}
           />
-          <Text style={styles.whatsNewText}>{'Whats on your mind?'}</Text>
+          <Text style={styles.whatsNewText}>{'on your mind?'}</Text>
         </View>
       </Pressable>
     );

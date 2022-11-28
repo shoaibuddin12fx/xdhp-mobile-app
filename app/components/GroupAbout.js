@@ -35,6 +35,7 @@ import MIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import VideoPlayer from 'react-native-video-player';
 
 function GroupAbout(props) {
+  console.log('this is about social');
   return (
     // <ScrollView>
     <View style={{backgroundColor: AppColor.appBg}}>

@@ -6,57 +6,75 @@ import {Image} from 'react-native';
 import {Text} from 'react-native';
 import CommentsComp, {Reply} from '../components/CommentsComp';
 import {AppColor} from '../shared/appColors';
-
-const comments = [
-  {
-    id: 1,
-    name: 'Henry Cavil',
-    comment: 'thats badass!',
-    reply: false,
-  },
-  {
-    id: 2,
-    name: 'Millie Bobby Brown',
-    comment: 'Thanks Henry ❤ 2',
-    reply_to: 1,
-    parent_comment_id: 1,
-    reply: true,
-  },
-  {
-    id: 3,
-    name: 'Millie Bobby Brown',
-    comment: 'Thanks Henry ❤ 3',
-    reply_to: 2,
-    parent_comment_id: 1,
-    reply: true,
-  },
-  {
-    id: 4,
-    name: 'Millie Bobby Brown',
-    comment: 'Thanks Henry ❤ 4',
-    // reply_to: 1,
-    // parent_comment_id: 1,
-    reply: false,
-  },
-  {
-    id: 5,
-    name: 'Henry Cavil',
-    comment: 'Hail Anolna 😂1',
-    reply: false,
-  },
-  {
-    id: 6,
-    name: 'Millie Bobby Brown',
-    comment: 'henryyyyyy 😂',
-    reply_to: 5,
-    parent_comment_id: 5,
-    reply: true,
-  },
-];
+import {ServiceApi} from '../Api/ServiceApi';
+import {useEffect} from 'react';
+// const comments = [
+//   {
+//     id: 1,
+//     name: 'Henry Cavil',
+//     comment: 'thats badass!',
+//     reply: false,
+//   },
+//   {
+//     id: 2,
+//     name: 'Millie Bobby Brown',
+//     comment: 'Thanks Henry ❤ 2',
+//     reply_to: 1,
+//     parent_comment_id: 1,
+//     reply: true,
+//   },
+//   {
+//     id: 3,
+//     name: 'Millie Bobby Brown',
+//     comment: 'Thanks Henry ❤ 3',
+//     reply_to: 2,
+//     parent_comment_id: 1,
+//     reply: true,
+//   },
+//   {
+//     id: 4,
+//     name: 'Millie Bobby Brown',
+//     comment: 'Thanks Henry ❤ 4',
+//     // reply_to: 1,
+//     // parent_comment_id: 1,
+//     reply: false,
+//   },
+//   {
+//     id: 5,
+//     name: 'Henry Cavil',
+//     comment: 'Hail Anolna 😂1',
+//     reply: false,
+//   },
+//   {
+//     id: 6,
+//     name: 'Millie Bobby Brown',
+//     comment: 'henryyyyyy 😂',
+//     reply_to: 5,
+//     parent_comment_id: 5,
+//     reply: true,
+//   },
+// ];
 
 const Comments = () => {
-  const [comment, setComments] = useState(comments);
+  console.log('these are the comments');
+  const [comment, setComments] = useState([]);
   const commentsAndTheirReplies = [];
+  const serviceApi = new ServiceApi();
+
+  const commentsApi = async () => {
+    const allComments = await serviceApi.allComments(13);
+    setComments(allComments.data);
+    console.log('\n\n\n\n\n\n\n\n these are the comments', allComments);
+    console.log(
+      '\n\n\n\n\n\n\n\n these are the comments data',
+      allComments.data,
+    );
+    // console.log('\n\n\n\n\n\n\n\n these are the comments', allComments.childCo);
+  };
+
+  useEffect(() => {
+    commentsApi();
+  }, []);
 
   //   for (let i = 0; i < comments.length; i++) {
   //     for (let j = 0; j < comments.length; j++) {
@@ -71,16 +89,8 @@ const Comments = () => {
 
   return (
     <>
-      {comments.map((comment, i) => {
-        return (
-          <>
-            {comment.reply == false ? (
-              <CommentsComp comment={comment} />
-            ) : (
-              <Reply comment={comment} />
-            )}
-          </>
-        );
+      {comment?.map((c, i) => {
+        return <>{<CommentsComp comment={c} />}</>;
       })}
     </>
   );
