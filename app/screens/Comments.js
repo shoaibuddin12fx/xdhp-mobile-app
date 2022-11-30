@@ -3,95 +3,176 @@ import React from 'react';
 import {useState} from 'react';
 import {StyleSheet} from 'react-native';
 import {Image} from 'react-native';
-import {Text} from 'react-native';
+import {Text, TextInput} from 'react-native';
 import CommentsComp, {Reply} from '../components/CommentsComp';
 import {AppColor} from '../shared/appColors';
 import {ServiceApi} from '../Api/ServiceApi';
 import {useEffect} from 'react';
-// const comments = [
-//   {
-//     id: 1,
-//     name: 'Henry Cavil',
-//     comment: 'thats badass!',
-//     reply: false,
-//   },
-//   {
-//     id: 2,
-//     name: 'Millie Bobby Brown',
-//     comment: 'Thanks Henry ❤ 2',
-//     reply_to: 1,
-//     parent_comment_id: 1,
-//     reply: true,
-//   },
-//   {
-//     id: 3,
-//     name: 'Millie Bobby Brown',
-//     comment: 'Thanks Henry ❤ 3',
-//     reply_to: 2,
-//     parent_comment_id: 1,
-//     reply: true,
-//   },
-//   {
-//     id: 4,
-//     name: 'Millie Bobby Brown',
-//     comment: 'Thanks Henry ❤ 4',
-//     // reply_to: 1,
-//     // parent_comment_id: 1,
-//     reply: false,
-//   },
-//   {
-//     id: 5,
-//     name: 'Henry Cavil',
-//     comment: 'Hail Anolna 😂1',
-//     reply: false,
-//   },
-//   {
-//     id: 6,
-//     name: 'Millie Bobby Brown',
-//     comment: 'henryyyyyy 😂',
-//     reply_to: 5,
-//     parent_comment_id: 5,
-//     reply: true,
-//   },
-// ];
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const Comments = () => {
-  console.log('these are the comments');
+  const comments = [
+    {
+      id: 1,
+      name: 'Henry Cavil',
+      description: 'thats badass!',
+      reply: false,
+      likes: 100,
+      childComments: [
+        {
+          id: 2,
+          name: 'Millie Bobby Brown',
+          description: 'Thanks Henry ❤ 2',
+          reply_to: 1,
+          parent_comment_id: 1,
+          reply: true,
+          likes: 5,
+        },
+        {
+          id: 3,
+          name: 'Millie Bobby Brown',
+          description: 'Thanks Henry ❤ 3',
+          reply_to: 2,
+          parent_comment_id: 1,
+          reply: true,
+          likes: 2,
+        },
+        {
+          id: 4,
+          name: 'Millie Bobby Brown',
+          description: 'Thanks Henry ❤ 4',
+          // reply_to: 1,
+          parent_comment_id: 1,
+          reply: false,
+          likes: 10,
+        },
+      ],
+    },
+
+    {
+      id: 5,
+      name: 'Henry Cavil',
+      description: 'Hail Anolna 😂1',
+      reply: false,
+      likes: 20,
+      childComments: [
+        {
+          id: 6,
+          name: 'Millie Bobby Brown',
+          description: 'henryyyyyy 😂',
+          reply_to: 5,
+          parent_comment_id: 5,
+          reply: true,
+          likes: 50,
+        },
+      ],
+    },
+  ];
+
+  // const a = require('../Assets/lady.png');
+  var a 
   const [comment, setComments] = useState([]);
-  const commentsAndTheirReplies = [];
+  const [writeComment, setWriteComment] = useState('');
+  // const commentsAndTheirReplies = [];
   const serviceApi = new ServiceApi();
 
   const commentsApi = async () => {
     const allComments = await serviceApi.allComments(13);
+    console.log("All Comments",allComments.data)
     setComments(allComments.data);
-    console.log('\n\n\n\n\n\n\n\n these are the comments', allComments);
-    console.log(
-      '\n\n\n\n\n\n\n\n these are the comments data',
-      allComments.data,
-    );
-    // console.log('\n\n\n\n\n\n\n\n these are the comments', allComments.childCo);
+  };
+
+  const handleSendComment = async () => {
+    // const resposne = await serviceApi.writeComment({
+    //   description: writeComment,
+    //   post_id: comment.post_id,
+    //   reply_to: comment.reply_to,
+    //   parent_comment_id: comment.parent_comment_id,
+    // });
+    let dummyComment = {
+      id: Math.random(),
+      user_id: 'New Comment' + Math.floor(Math.random() * 10),
+      description: writeComment,
+      reply: false,
+      likes: Math.floor(Math.random() * 10),
+      childComments: [],
+    };
+    setComments([dummyComment, ...comment]);
+    // Emptying the comment just written
+    setWriteComment('');
+    // send the new parent comment to the server
+    let writeComment_response = await serviceApi.writeComment(comment)
+    console.log("Write Comment Response", writeComment_response)
+    await commentsApi();
+    console.log({resposne});
   };
 
   useEffect(() => {
-    commentsApi();
-  }, []);
+    console.log({writeComment});
+  }, [setWriteComment]);
 
-  //   for (let i = 0; i < comments.length; i++) {
-  //     for (let j = 0; j < comments.length; j++) {
-  //       if (comment[i].id == comments[j].reply_to) {
-  //         console.log('\n\n\n\n\n\n\n\n\n', {
-  //           comment: comments[i].id,
-  //           reply: comments[j].id + '' + comments[j].reply_to,
-  //         });
-  //       }
-  //     }
-  //   }
+  useEffect(() => {
+    commentsApi();
+    // setComments([comment, ...comments]);
+    // setComments(comments);
+    // console.log("Comments.js", comment)
+  }, []);
 
   return (
     <>
       {comment?.map((c, i) => {
-        return <>{<CommentsComp comment={c} />}</>;
+        return <>{<CommentsComp comment={c} setComments={setComments} key={i}/>}</>;
       })}
+      <View
+        style={[
+          styles.writeCommentView,
+          {
+            height: 'auto',
+            borderTopWidth: 1,
+            paddingTop: 10,
+            // paddingBottom: 10,
+            borderTopColor: AppColor.lightGray,
+          },
+        ]}>
+        <View style={[styles.imageView, {borderRadius: 9999999}]}>
+          <Image source={a} style={[{height: 40, width: 40}]} />
+        </View>
+        <View
+          style={[
+            {
+              height: 'auto',
+              width: '80%',
+              // backgroundColor: 'blue',
+            },
+          ]}>
+          <TextInput
+            value={writeComment}
+            onChangeText={text => {
+              console.log({text});
+              setWriteComment(text);
+            }}
+            placeholder="Write a Comment"
+            style={[
+              {
+                height: 'auto',
+                width: '100%',
+                marginLeft: 5,
+                backgroundColor: 'white',
+              },
+            ]}></TextInput>
+        </View>
+        <View>
+          <Icon
+            name="ios-send"
+            size={30}
+            color={AppColor.greenButton}
+            onPress={() => {
+              handleSendComment();
+              console.log('send the comment');
+            }}
+          />
+        </View>
+      </View>
     </>
   );
 };
@@ -146,6 +227,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: 10,
+  },
+  writeCommentView: {
+    // backgroundColor: 'red',
+    height: 50,
+    marginTop: 20,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    // padding: 10,
   },
 });
 export default Comments;
