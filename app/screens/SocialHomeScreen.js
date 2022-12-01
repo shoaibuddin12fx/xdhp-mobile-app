@@ -421,7 +421,7 @@ function SocialHomeScreen(props) {
           </View>
           <View style={styles.transparentView} />
           <View>
-            <Comments />
+            <Comments item={item}/>
           </View>
         </View>
       </View>

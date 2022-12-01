@@ -10,7 +10,10 @@ import {ServiceApi} from '../Api/ServiceApi';
 import {useEffect} from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-const Comments = () => {
+const api = new ServiceApi();
+ 
+const Comments = ({item}) => {
+  console.log("\n\n\n\n\n\n\nitem: ",item,"\n\n\n\n\n\n\n")
   const comments = [
     {
       id: 1,
@@ -18,7 +21,7 @@ const Comments = () => {
       description: 'thats badass!',
       reply: false,
       likes: 100,
-      childComments: [
+      childComments: [  
         {
           id: 2,
           name: 'Millie Bobby Brown',
@@ -74,16 +77,16 @@ const Comments = () => {
   const [comment, setComments] = useState([]);
   const [writeComment, setWriteComment] = useState('');
   // const commentsAndTheirReplies = [];
-  const serviceApi = new ServiceApi();
+  // const api = new ServiceApi();
 
   const commentsApi = async () => {
-    const allComments = await serviceApi.allComments(13);
+    // const allComments = await api.allComments(13);
     console.log("All Comments",allComments.data)
     setComments(allComments.data);
   };
 
   const handleSendComment = async () => {
-    // const resposne = await serviceApi.writeComment({
+    // const resposne = await api.writeComment({
     //   description: writeComment,
     //   post_id: comment.post_id,
     //   reply_to: comment.reply_to,
@@ -101,7 +104,7 @@ const Comments = () => {
     // Emptying the comment just written
     setWriteComment('');
     // send the new parent comment to the server
-    let writeComment_response = await serviceApi.writeComment(comment)
+    let writeComment_response = await api.writeComment(comment)
     console.log("Write Comment Response", writeComment_response)
     await commentsApi();
     console.log({resposne});

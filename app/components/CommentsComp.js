@@ -60,7 +60,7 @@ const CommentsComp = ({ comment, setComments }) => {
 
   return (
     <>
-      <View style={styles.container}>
+      <View style={styles.container} key={key}>
         <View style={styles.formRow}>
           <View style={styles.formIcon}>
             <View style={[styles.imageView]}>
@@ -168,7 +168,7 @@ const ReplyTo = ({ sendReply, setSendReply }) => {
 };
 
 
-export const Reply = ({ comment }) => {
+export const Reply = ({ comment, key }) => {
   // const [reply, setReply] = useState(true);
   const handleLikes = async (data) => {
     const likeResposne = await serviceApi.likePostOrComment(data);
@@ -176,7 +176,7 @@ export const Reply = ({ comment }) => {
     // console.log("likeResposne", { data })
   }
   return (
-    <View style={[styles.container, { marginLeft: 0, padding: 0 }]}>
+    <View style={[styles.container, { marginLeft: 0, padding: 0 }]} key={key}>
       <View style={styles.formRow}>
         <View style={styles.formIcon}>
           <View style={[styles.imageView]}>
